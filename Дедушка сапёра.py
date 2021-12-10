@@ -27,12 +27,17 @@ class Board:
         self.screen = screen
         self.cell_cords = []
         start = (0 + self.left, 0 + self.top)
+        count1, count2 = -1, 0
         for i in range(0, (len(self.board)) * self.cell_size, self.cell_size):
             self.cell_cords.append([])
+            count1 += 1
             for j in range(0, (len(self.board[0])) * self.cell_size, self.cell_size):
                 pygame.draw.rect(screen, pygame.Color('white'), (start[0] + j, start[1] + i,
                                                                  self.cell_size, self.cell_size), 1)
                 self.cell_cords[-1].append((start[0] + j, start[1] + i))
+                count2 += 1
+            count2 = 0
+        count1 = 0
 
     def get_cell(self, mouse_pos):
         for i in range(len(self.cell_cords)):
@@ -65,13 +70,29 @@ class Minesweeper(Board):
 
             self.board[x][y] = 10
             i += 1
+            print(self.board)
 
     def render(self, screen):
+        self.screen = screen
+        self.cell_cords = []
+        start = (0 + self.left, 0 + self.top)
+        count1, count2 = -1, 0
+        for i in range(0, (len(self.board)) * self.cell_size, self.cell_size):
+            self.cell_cords.append([])
+            count1 += 1
+            for j in range(0, (len(self.board[0])) * self.cell_size, self.cell_size):
+                if self.board[count1][count2] == 10:
+                    pygame.draw.rect(screen, 'red', (start[0] + j, start[1] + i,
+                                                       self.cell_size, self.cell_size), 0)
+                pygame.draw.rect(screen, pygame.Color('white'), (start[0] + j, start[1] + i,
+                                                                 self.cell_size, self.cell_size), 1)
+                self.cell_cords[-1].append((start[0] + j, start[1] + i))
+                count2 += 1
+            count2 = 0
+        count1 = 0
 
-        pass
 
-
-board = Board(5, 7)
+board = Minesweeper(10, 10, 7)
 running = True
 while running:
     for event in pygame.event.get():

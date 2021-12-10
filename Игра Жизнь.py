@@ -14,7 +14,7 @@ class Board:
         # значения по умолчанию
         self.left = 10
         self.top = 10
-        self.cell_size = 30
+        self.cell_size = 20
 
     # настройка внешнего вида
     def set_view(self, left, top, cell_size):
@@ -59,10 +59,16 @@ class Life(Board):
         self.board = [[0] * width for _ in range(height)]
 
     def next_move(self):
-        pass
+        for i in self.board:
+            string = self.board[i]
+            for j in string:
+                col = string[j]
+
+        print('следующий шаг')
 
     def on_click(self, cell_cords):
-        self.board[cell_cords[1]][cell_cords[0]] = (self.board[cell_cords[1]][cell_cords[0]] + 1) % 2
+        if cell_cords is not None:
+            self.board[cell_cords[1]][cell_cords[0]] = (self.board[cell_cords[1]][cell_cords[0]] + 1) % 2
         # pygame.draw.rect(screen, pygame.Color('white'), (start[0] + cellcords[0], start[1] + cell_cords[1],
         #                                                  self.cell_size, self.cell_size), 1)
         print(cell_cords, board.board)
@@ -77,9 +83,8 @@ class Life(Board):
             count1 += 1
             for j in range(0, (len(self.board[0])) * self.cell_size, self.cell_size):
                 if self.board[count1][count2] == 1:
-                    print('ок')
                     pygame.draw.rect(screen, 'green', (start[0] + j, start[1] + i,
-                                     self.cell_size, self.cell_size), 0)
+                                                       self.cell_size, self.cell_size), 0)
                 pygame.draw.rect(screen, pygame.Color('white'), (start[0] + j, start[1] + i,
                                                                  self.cell_size, self.cell_size), 1)
                 self.cell_cords[-1].append((start[0] + j, start[1] + i))
@@ -90,12 +95,19 @@ class Life(Board):
 
 board = Life(40, 40)
 running = True
+play = 0
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
             board.get_click(event.pos)
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                play = (play + 1) % 2
+    if play:
+        board.next_move()
+
 
     screen.fill((0, 0, 0))
     board.render(screen)
