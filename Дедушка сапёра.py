@@ -89,7 +89,7 @@ class Minesweeper(Board):
                 self.cell_cords[-1].append((start[0] + j, start[1] + i))
                 count2 += 1
             count2 = 0
-        count1 = 0
+
 
 
 board = Minesweeper(10, 10, 7)
