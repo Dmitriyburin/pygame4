@@ -81,15 +81,42 @@ class Minesweeper(Board):
             self.cell_cords.append([])
             count1 += 1
             for j in range(0, (len(self.board[0])) * self.cell_size, self.cell_size):
+                self.cell_cords[-1].append((start[0] + j, start[1] + i))
+
                 if self.board[count1][count2] == 10:
                     pygame.draw.rect(screen, 'red', (start[0] + j, start[1] + i,
-                                                       self.cell_size, self.cell_size), 0)
+                                                     self.cell_size, self.cell_size), 0)
+                elif self.board[count1][count2] != -1:
+                    print(count1, count2)
+                    font = pygame.font.Font(None, 25)
+                    text = font.render(f'{self.board[count1][count2]}', True, 'green')
+                    text_x = self.cell_cords[count1][count2][0]
+                    text_y = self.cell_cords[count1][count2][1]
+
+                    screen.blit(text, (text_x + 3, text_y + 3))
                 pygame.draw.rect(screen, pygame.Color('white'), (start[0] + j, start[1] + i,
                                                                  self.cell_size, self.cell_size), 1)
-                self.cell_cords[-1].append((start[0] + j, start[1] + i))
                 count2 += 1
             count2 = 0
 
+    def on_click(self, cell_cords):
+        if cell_cords is not None:
+            self.open_cell(cell_cords)
+
+    def open_cell(self, cell_cords):
+        count = 0
+        print()
+        if self.board[cell_cords[1]][cell_cords[0]] != 10:
+            for i in range(len(self.board)):
+                string = self.board[i]
+                for j in range(len(string)):
+                    col = string[j]
+                    if (j, i) != cell_cords:
+                        if (abs(j - cell_cords[0]) == 0 or abs(j - cell_cords[0]) == 1) and\
+                                (abs(i - cell_cords[1]) == 0 or abs(i - cell_cords[1]) == 1):
+                            if col == 10:
+                                count += 1
+            self.board[cell_cords[1]][cell_cords[0]] = count
 
 
 board = Minesweeper(10, 10, 7)
