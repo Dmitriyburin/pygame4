@@ -2,7 +2,7 @@ import pygame
 import random
 
 pygame.init()
-size = width, height = 400, 400
+size = width, height = 325, 440
 screen = pygame.display.set_mode(size)
 
 
@@ -68,7 +68,7 @@ class Minesweeper(Board):
             x = random.randint(0, self.width - 1)
             y = random.randint(0, self.height - 1)
 
-            self.board[x][y] = 10
+            self.board[y][x] = 10
             i += 1
             print(self.board)
 
@@ -119,7 +119,7 @@ class Minesweeper(Board):
             self.board[cell_cords[1]][cell_cords[0]] = count
 
 
-board = Minesweeper(10, 10, 7)
+board = Minesweeper(10, 14, 14)
 running = True
 while running:
     for event in pygame.event.get():
