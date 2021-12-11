@@ -1,7 +1,8 @@
 import pygame
+import copy
 
 pygame.init()
-size = width, height = 400, 400
+size = width, height = 500, 500
 screen = pygame.display.set_mode(size)
 
 
@@ -59,19 +60,27 @@ class Life(Board):
         self.board = [[0] * width for _ in range(height)]
 
     def next_move(self):
-        for i in self.board:
-            string = self.board[i]
-            for j in string:
-                col = string[j]
-
-        print('следующий шаг')
+        tmp_board = copy.deepcopy(self.board)
+        for i in range(self.height):
+            for j in range(self.width):
+                s = 0
+                for dy in range(-1, 2):
+                    for dx in range(-1, 2):
+                        if j + dx < 0 or j + dx >= self.width or i + dy < 0 or i + dy >= self.height:
+                            continue
+                        s += self.board[i + dy][j + dx]
+                s -= self.board[i][j]
+                if s == 3:
+                    tmp_board[i][j] = 1
+                elif s < 2 or s > 3:
+                    tmp_board[i][j] = 0
+        self.board = copy.deepcopy(tmp_board)
 
     def on_click(self, cell_cords):
         if cell_cords is not None:
             self.board[cell_cords[1]][cell_cords[0]] = (self.board[cell_cords[1]][cell_cords[0]] + 1) % 2
-        # pygame.draw.rect(screen, pygame.Color('white'), (start[0] + cellcords[0], start[1] + cell_cords[1],
-        #                                                  self.cell_size, self.cell_size), 1)
-        print(cell_cords, board.board)
+
+
 
     def render(self, screen):
         self.screen = screen
@@ -90,25 +99,35 @@ class Life(Board):
                 self.cell_cords[-1].append((start[0] + j, start[1] + i))
                 count2 += 1
             count2 = 0
-        count1 = 0
 
 
-board = Life(40, 40)
+board = Life(23, 23)
 running = True
 play = 0
+fps = 10
+clock = pygame.time.Clock()
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
-            board.get_click(event.pos)
+            if event.button == 1 or event.button == 2:
+                board.get_click(event.pos)
+            elif event.button == 5:
+                fps -= 2
+                fps = 1 if fps < 1 else fps
+            elif event.button == 4:
+                fps += 2
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 play = (play + 1) % 2
+                if play:
+                    fps = 10
     if play:
         board.next_move()
-
-
+    else:
+        fps = 60
+    clock.tick(fps)
     screen.fill((0, 0, 0))
     board.render(screen)
     pygame.display.flip()
